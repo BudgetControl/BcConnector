@@ -1,0 +1,33 @@
+{
+    "name": "budgetcontrol/libs-connector",
+    "description": "defines the dependencies required for a PHP library in a Budget control application",
+    "type": "none",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "monolog/monolog": "^3.5",
+        "vlucas/phpdotenv": "^5.6",
+        "psr/log": "^3.0",
+        "illuminate/http": "^11.4"
+    },
+    "require-dev": {
+        "nikic/php-parser": "^5.0",
+        "fakerphp/faker": "^1.23",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Budgetcontrol\\Connector\\": "src/"
+        },
+        "files": [
+            "config/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Marco De Felice",
+            "email": "marco.defelice@mlabfactory.it"
+        }
+    ],
+    "minimum-stability": "stable"
+}
