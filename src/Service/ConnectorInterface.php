@@ -1,6 +1,7 @@
 <?php
 namespace Budgetcontrol\Connector\Service;
 
+use Budgetcontrol\Connector\Model\Response as ModelResponse;
 use Illuminate\Support\Facades\Response;
 use Isaia\Http\Middleware\HttpResponse;
 
@@ -39,6 +40,6 @@ interface ConnectorInterface {
      * @param string $path The path to call.
      * @return HttpResponse The HTTP response.
      */
-    public function call(string $path, int $userId): \Illuminate\Http\Client\Response;
+    public function call(string $path, int $userId): ModelResponse;
 
 }
