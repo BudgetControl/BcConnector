@@ -2,7 +2,7 @@
 namespace Budgetcontrol\Connector\Factory;
 
 use Budgetcontrol\Connector\Service\ConnectorInterface;
-use Budgetcontrol\Connector\Workspace\WorkspaceClient;
+use Budgetcontrol\Connector\Client\WorkspaceClient;
 
 class Workspace extends Factory {
 

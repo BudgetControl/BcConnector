@@ -2,7 +2,7 @@
 namespace Budgetcontrol\Connector\Factory;
 
 use Budgetcontrol\Connector\Service\ConnectorInterface;
-use Budgetcontrol\Connector\Workspace\WorkspaceClient;
+use Budgetcontrol\Connector\Client\WorkspaceClient;
 
 /**
  * FILEPATH: /Users/marco/Projects/marco/Core/microservices/Authtentication/vendor/budgetcontrol/libs-connector/src/Factory/Factory.php
