@@ -17,16 +17,24 @@ class Connector {
     protected string $method = 'get';
     protected array $_PATH= [];
 
+    const METHODS = [
+        'POST' => 'post',
+        'GET' => 'get',
+        'PUT' => 'put',
+        'DELETE' => 'delete',
+        'PATCH' => 'patch',
+    ];
+
     public function call(string $path, int $userId): ModelResponse
     {
-        if(!in_array($path, $this->_PATH)){
-            throw new \Exception("Path not allowed", 405);
+        $method = $this->method;
+        if(!in_array($method, self::METHODS)){
+            throw new \Exception("Method not allowed", 405);
         }
 
         $path =  $this->_DOMAIN."/$userId$path";
         $payload = $this->payload;
 
-        $method = $this->method;
 
         $curl = new Client();
         $response = $curl->$method($path, [

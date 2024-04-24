@@ -17,14 +17,7 @@ class WorkspaceClient extends Connector implements ConnectorInterface {
     protected string $method = 'get';
     protected array $_PATH = [
         '/add',
-    ];
-
-    const METHODS = [
-        'POST' => 'post',
-        'GET' => 'get',
-        'PUT' => 'put',
-        'DELETE' => 'delete',
-        'PATCH' => 'patch',
+        '/activate'
     ];
 
     public function setPayload($payload): self
