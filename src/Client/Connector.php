@@ -27,7 +27,7 @@ class Connector {
 
     public function call(string $path, int $userId): ModelResponse
     {
-        $method = $this->method;
+        $method = strtolower($this->method);
         if(!in_array($method, self::METHODS)){
             throw new \Exception("Method not allowed", 405);
         }
@@ -37,7 +37,7 @@ class Connector {
 
 
         $curl = new Client();
-        $response = $curl->$method($path, [
+        $response = $method($path, [
             'headers' => $this->header,
             'json' => $payload
         ]);
