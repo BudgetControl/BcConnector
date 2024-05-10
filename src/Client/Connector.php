@@ -15,7 +15,6 @@ class Connector {
     protected array $payload = [];
     protected array $header = [];
     protected string $method = 'get';
-    protected array $_PATH= [];
 
     const METHODS = [
         'POST' => 'post',
@@ -25,14 +24,14 @@ class Connector {
         'PATCH' => 'patch',
     ];
 
-    public function call(string $path, int $userId): ModelResponse
+    public function call(string $path, int $wsId): ModelResponse
     {
         $method = strtolower($this->method);
         if(!in_array($method, self::METHODS)){
             throw new \Exception("Method not allowed", 405);
         }
 
-        $path =  $this->_DOMAIN."/$userId$path";
+        $path =  $this->_DOMAIN."/$wsId$path";
         $payload = $this->payload;
 
 
