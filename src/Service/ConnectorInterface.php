@@ -2,8 +2,6 @@
 namespace Budgetcontrol\Connector\Service;
 
 use Budgetcontrol\Connector\Model\Response as ModelResponse;
-use Illuminate\Support\Facades\Response;
-use Isaia\Http\Middleware\HttpResponse;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
