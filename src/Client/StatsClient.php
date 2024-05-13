@@ -1,17 +1,14 @@
 <?php
 namespace Budgetcontrol\Connector\Client;
 
-use Budgetcontrol\Connector\Model\Response as ModelResponse;
 use Budgetcontrol\Connector\Service\ConnectorInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
  */
-class WorkspaceClient extends Connector implements ConnectorInterface {
+class StatsClient extends Connector implements ConnectorInterface {
 
-    protected string $_DOMAIN = 'http://budgetcontrol-ms-workspace';
+    protected string $_DOMAIN = 'http://budgetcontrol-ms-stats';
     protected array $payload = [];
     protected array $header = [];
     protected string $method = 'get';

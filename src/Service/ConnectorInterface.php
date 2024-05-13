@@ -2,8 +2,6 @@
 namespace Budgetcontrol\Connector\Service;
 
 use Budgetcontrol\Connector\Model\Response as ModelResponse;
-use Illuminate\Support\Facades\Response;
-use Isaia\Http\Middleware\HttpResponse;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
@@ -38,7 +36,7 @@ interface ConnectorInterface {
      * Makes a call to the specified path and returns the HTTP response.
      *
      * @param string $path The path to call.
-     * @return HttpResponse The HTTP response.
+     * @return ModelResponse The HTTP response.
      */
     public function call(string $path, int $userId): ModelResponse;
 
