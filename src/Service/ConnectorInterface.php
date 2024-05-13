@@ -36,7 +36,7 @@ interface ConnectorInterface {
      * Makes a call to the specified path and returns the HTTP response.
      *
      * @param string $path The path to call.
-     * @return HttpResponse The HTTP response.
+     * @return ModelResponse The HTTP response.
      */
     public function call(string $path, int $userId): ModelResponse;
 

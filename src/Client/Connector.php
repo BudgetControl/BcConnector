@@ -36,7 +36,7 @@ class Connector {
 
 
         $curl = new Client();
-        $response = $method($path, [
+        $response = $curl->{$method}($path, [
             'headers' => $this->header,
             'json' => $payload
         ]);
