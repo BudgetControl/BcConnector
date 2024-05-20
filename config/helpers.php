@@ -33,7 +33,7 @@ if(!function_exists('response')) {
 }
 
 if(!function_exists("LibsConnect")) {
-    function LibsConnect(string $domain, string $path, int $wsid, string $method, array $payLoad, array $headers): array {
+    function libsConnect(string $domain, string $path, int $wsid, string $method = 'GET', array $payLoad = [], array $headers = []): array {
         $connect = new Connector();
         $connect->setMethod($method);
         $connect->setPayload($payLoad);
