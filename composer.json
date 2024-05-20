@@ -18,10 +18,7 @@
     "autoload": {
         "psr-4": {
             "Budgetcontrol\\Connector\\": "src/"
-        },
-        "files": [
-            "config/helpers.php"
-        ]
+        }
     },
     "authors": [
         {
