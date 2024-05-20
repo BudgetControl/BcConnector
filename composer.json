@@ -3,7 +3,6 @@
     "description": "defines the dependencies required for a PHP library in a Budget control application",
     "type": "none",
     "license": "MIT",
-    "version": "0.1",
     "require": {
         "php": "^8.1",
         "monolog/monolog": "^3.5",
