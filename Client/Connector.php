@@ -9,7 +9,7 @@ use GuzzleHttp\Psr7\Response;
 /**
  * Class to connect to the Budget Control API of the microservice.
  */
-class Connector implements ConnectorInterface {
+class Connector {
 
     protected string $_DOMAIN = 'http://budgetcontrol-core';
     protected array $payload = [];
@@ -42,65 +42,5 @@ class Connector implements ConnectorInterface {
         ]);
         
         return new ModelResponse($response->getStatusCode(), $response->getBody()->getContents());
-    }
-
-
-    /**
-     * Set the value of header
-     *
-     * @param array $header
-     *
-     * @return self
-     */
-    public function setHeader(array $header): self
-    {
-        $this->header = $header;
-
-        return $this;
-    }
-
-
-    /**
-     * Set the value of payload
-     *
-     * @param array $payload
-     *
-     * @return self
-     */
-    public function setPayload(array $payload): self
-    {
-        $this->payload = $payload;
-
-        return $this;
-    }
-
-
-    /**
-     * Set the value of method
-     *
-     * @param string $method
-     *
-     * @return self
-     */
-    public function setMethod(string $method): self
-    {
-        $this->method = $method;
-
-        return $this;
-    }
-
-
-    /**
-     * Set the value of _DOMAIN
-     *
-     * @param string $_DOMAIN
-     *
-     * @return self
-     */
-    public function setDomain(string $_DOMAIN): self
-    {
-        $this->_DOMAIN = $_DOMAIN;
-
-        return $this;
     }
 }
