@@ -43,7 +43,10 @@ class Connector implements ConnectorInterface {
                 'json' => $payload
             ]);
         } catch (RequestException $e) {
-            return new ModelResponse(400, '');
+            $modelResponse = new ModelResponse(400, '');
+            $modelResponse->setError($e->getMessage());
+            return $modelResponse;
+            
         }
 
         
