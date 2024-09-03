@@ -18,6 +18,10 @@ class Response {
 
     public function getBody(): array
     {
+        if(empty($this->body)) {
+            return [];
+        }
+
         return json_decode($this->body, true);
     }
 }
