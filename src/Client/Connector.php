@@ -4,6 +4,7 @@ namespace Budgetcontrol\Connector\Client;
 use Budgetcontrol\Connector\Model\Response as ModelResponse;
 use Budgetcontrol\Connector\Service\ConnectorInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -35,11 +36,16 @@ class Connector implements ConnectorInterface {
         $payload = $this->payload;
 
 
-        $curl = new Client();
-        $response = $curl->{$method}($path, [
-            'headers' => $this->header,
-            'json' => $payload
-        ]);
+        try {
+            $curl = new Client();
+            $response = $curl->{$method}($path, [
+                'headers' => $this->header,
+                'json' => $payload
+            ]);
+        } catch (RequestException $e) {
+            return new ModelResponse(400, '');
+        }
+
         
         return new ModelResponse($response->getStatusCode(), $response->getBody()->getContents());
     }
