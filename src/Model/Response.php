@@ -4,7 +4,7 @@ namespace Budgetcontrol\Connector\Model;
 class Response {
     private int $statusCode;
     private string $body;
-    private string $error;
+    private string $error = '';
 
     public function __construct(int $statusCode, string $body)
     {
