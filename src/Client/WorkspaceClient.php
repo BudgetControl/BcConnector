@@ -1,42 +1,59 @@
 <?php
 namespace Budgetcontrol\Connector\Client;
 
-use Budgetcontrol\Connector\Model\Response as ModelResponse;
-use Budgetcontrol\Connector\Service\ConnectorInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
+use HttpClientService;
+use Psr\Log\LoggerInterface;
+use Budgetcontrol\Connector\Entities\HttpResponse;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
  */
-class WorkspaceClient extends Connector implements ConnectorInterface {
+class WorkspaceClient extends Client implements ConnectorInterface {
 
-    protected string $_DOMAIN = 'http://budgetcontrol-ms-workspace';
-    protected array $payload = [];
-    protected array $header = [];
-    protected string $method = 'get';
-
-    public function setPayload($payload): self
+    public function add(array $data): HttpResponse
     {
-        $this->payload = $payload;
-        return $this;
+        return $this->post('/workspaces', $data);
     }
 
-    public function setHeader($header): self
+    public function list(string $userId): HttpResponse
     {
-        $this->header = $header;
-        return $this;
+        return $this->get("/{$userId}/list");
     }
 
-    public function setMethod($method): self
+    public function listByUser(string $userId): HttpResponse
     {
-        if(!array_key_exists($method, self::METHODS)) {
-            throw new \Exception("Method not allowed", 405);
-        }
-
-        $this->method = self::METHODS[$method];
-
-        return $this;
+        return $this->get("/{$userId}/by-user/list");
     }
-    
+
+    public function last(string $userId): HttpResponse
+    {
+        return $this->get("/{$userId}/last");
+    }
+
+    public function getWorkspace(string $userId, string $wsId): HttpResponse
+    {
+        return $this->get("/{$userId}/{$wsId}");
+    }
+
+    public function update(string $userId, string $wsId, array $data): HttpResponse
+    {
+        return $this->put("/{$userId}/update/{$wsId}", $data);
+    }
+
+    public function deleteWorkspace(string $wsId): HttpResponse
+    {
+        return $this->delete("/{$wsId}/delete");
+    }
+
+    public function activate(string $userId, string $wsId, array $data): HttpResponse
+    {
+        return $this->patch("/{$userId}/{$wsId}/activate", $data);
+    }
+
+    public function share(string $userId, string $wsId, array $data): HttpResponse
+    {
+        return $this->post("/{$userId}/{$wsId}/share", $data);
+    }
+
 }

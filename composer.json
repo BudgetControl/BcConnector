@@ -1,5 +1,5 @@
 {
-    "name": "budgetcontrol/libs-connector",
+    "name": "budgetcontrol/connector",
     "description": "defines the dependencies required for a PHP library in a Budget control application",
     "type": "none",
     "license": "MIT",

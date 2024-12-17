@@ -1,39 +1,104 @@
 <?php
 namespace Budgetcontrol\Connector\Client;
 
-use Budgetcontrol\Connector\Service\ConnectorInterface;
+use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
+use HttpClientService;
+use Psr\Log\LoggerInterface;
+use Budgetcontrol\Connector\Entities\HttpResponse;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
  */
-class StatsClient extends Connector implements ConnectorInterface {
+class StatsClient extends Client implements ConnectorInterface {
 
-    protected string $_DOMAIN = 'http://budgetcontrol-ms-stats';
-    protected array $payload = [];
-    protected array $header = [];
-    protected string $method = 'get';
-
-    public function setPayload($payload): self
+    public function getIncomingOfCurrentMonth($wsid)
     {
-        $this->payload = $payload;
-        return $this;
+        return $this->get("/{$wsid}/incoming");
     }
 
-    public function setHeader($header): self
+    public function getExpensesOfCurrentMonth($wsid)
     {
-        $this->header = $header;
-        return $this;
+        return $this->get("/{$wsid}/expenses");
     }
 
-    public function setMethod($method): self
+    public function getTotalOfCurrentMonth($wsid)
     {
-        if(!array_key_exists($method, self::METHODS)) {
-            throw new \Exception("Method not allowed", 405);
-        }
+        return $this->get("/{$wsid}/total");
+    }
 
-        $this->method = self::METHODS[$method];
+    public function getWallets($wsid)
+    {
+        return $this->get("/{$wsid}/wallets");
+    }
 
-        return $this;
+    public function getHealth($wsid)
+    {
+        return $this->get("/{$wsid}/health");
+    }
+
+    public function getTotalPlannedOfCurrentMonth($wsid)
+    {
+        return $this->get("/{$wsid}/planned");
+    }
+
+    public function getAverageExpenses($wsid)
+    {
+        return $this->get("/{$wsid}/average-expenses");
+    }
+
+    public function getAverageIncoming($wsid)
+    {
+        return $this->get("/{$wsid}/average-incoming");
+    }
+
+    public function getAverageSavings($wsid)
+    {
+        return $this->get("/{$wsid}/average-savings");
+    }
+
+    public function getTotalLoanInstallmentsOfCurrentMonth($wsid)
+    {
+        return $this->get("/{$wsid}/total-loan-installments");
+    }
+
+    public function getTotalPlannedRemainingOfCurrentMonth($wsid)
+    {
+        return $this->get("/{$wsid}/total/planned/remaining");
+    }
+
+    public function getTotalPlannedMonthlyEntry($wsid)
+    {
+        return $this->get("/{$wsid}/total/planned/monthly");
+    }
+
+    public function getIncomingExpensesByDate($wsid)
+    {
+        return $this->get("/{$wsid}/chart/line/incoming-expenses");
+    }
+
+    public function getExpensesCategoryByDateBar($wsid)
+    {
+        return $this->get("/{$wsid}/chart/bar/expenses/category");
+    }
+
+    public function getExpensesCategoryByDateTable($wsid)
+    {
+        return $this->get("/{$wsid}/chart/table/expenses/category");
+    }
+
+    public function getExpensesLabelsByDateBar($wsid)
+    {
+        return $this->get("/{$wsid}/chart/bar/expenses/label");
+    }
+
+    public function getExpensesLabelsByDateApplePie($wsid)
+    {
+        return $this->get("/{$wsid}/chart/apple-pie/expenses/label");
+    }
+
+    public function postEntries($wsid, $data)
+    {
+        return $this->post("/{$wsid}/stats/entries", $data);
     }
     
 }
