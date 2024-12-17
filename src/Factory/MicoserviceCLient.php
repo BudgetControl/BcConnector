@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Budgetcontrol\Connector\Client\EntryClient;
 use Budgetcontrol\Connector\Client\StatsClient;
 use Budgetcontrol\Connector\Client\BudgetClient;
+use Budgetcontrol\Connector\Client\SavingClient;
 use Budgetcontrol\Connector\Client\WalletClient;
 use Budgetcontrol\Connector\Client\WorkspaceClient;
 use Budgetcontrol\Connector\Entities\MsDomains;
@@ -18,6 +19,7 @@ final class MicroserviceCLient {
     private EntryClient $entryClient;
     private StatsClient $statsClient;
     private BudgetClient $budgetClient;
+    private SavingClient $savingClient;
 
     private function __construct(MsDomains $domain, LoggerInterface $log)
     {
@@ -26,6 +28,7 @@ final class MicroserviceCLient {
         $this->entryClient = new EntryClient($domain->entry, $log);
         $this->statsClient = new StatsClient($domain->stats, $log);
         $this->budgetClient = new BudgetClient($domain->budget, $log);
+        $this->savingClient = new SavingClient($domain->saving, $log);
     }
 
     public static function create(MsDomains $domains, LoggerInterface $log): MicroserviceCLient
