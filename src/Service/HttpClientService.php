@@ -1,6 +1,7 @@
 <?php
-
 declare(strict_types=1);
+
+namespace Budgetcontrol\Connector\Service;
 
 use GuzzleHttp\Client;
 use Budgetcontrol\Connector\Entities\HttpResponse as Response;

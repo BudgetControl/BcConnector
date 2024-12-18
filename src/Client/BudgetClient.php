@@ -2,7 +2,7 @@
 namespace Budgetcontrol\Connector\Client;
 
 use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
-use HttpClientService;
+use Budgetcontrol\Connector\Service\HttpClientService;
 use Psr\Log\LoggerInterface;
 use Budgetcontrol\Connector\Entities\HttpResponse;
 
