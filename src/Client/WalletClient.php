@@ -38,7 +38,7 @@ class WalletClient extends Client implements ConnectorInterface {
 
     public function archive($wsid, $uuid)
     {
-        return $this->patch("/{$wsid}/{$uuid}", ['archived' => true]);
+        return $this->patch("/{$wsid}/archive/{$uuid}", ['archived' => true]);
     }
 
     public function updateBalance($wsid, $uuid, float $newBalance)
@@ -55,5 +55,4 @@ class WalletClient extends Client implements ConnectorInterface {
     {
         return $this->patch("/{$wsid}/sorting/{$uuid}", ['json' => $data]);
     }
-    
 }
