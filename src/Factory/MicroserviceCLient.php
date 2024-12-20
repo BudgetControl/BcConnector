@@ -12,7 +12,7 @@ use Budgetcontrol\Connector\Client\WalletClient;
 use Budgetcontrol\Connector\Client\WorkspaceClient;
 use Budgetcontrol\Connector\Entities\MsDomains;
 
-final class MicroserviceCLient {
+final class MicroserviceClient {
 
     private WorkspaceClient $workspaceClient;
     private WalletClient $walletClient;
@@ -21,19 +21,20 @@ final class MicroserviceCLient {
     private BudgetClient $budgetClient;
     private SavingClient $savingClient;
 
-    private function __construct(MsDomains $domain, LoggerInterface $log)
+    public function __construct(MsDomains $domain, LoggerInterface $log)
     {
-        $this->workspaceClient = new WorkspaceClient($domain->workspace, $log);
-        $this->walletClient = new WalletClient($domain->wallet, $log);
-        $this->entryClient = new EntryClient($domain->entry, $log);
-        $this->statsClient = new StatsClient($domain->stats, $log);
-        $this->budgetClient = new BudgetClient($domain->budget, $log);
-        $this->savingClient = new SavingClient($domain->saving, $log);
-    }
+        $clients = [
+            'workspaceClient' => WorkspaceClient::class,
+            'walletClient' => WalletClient::class,
+            'entryClient' => EntryClient::class,
+            'statsClient' => StatsClient::class,
+            'budgetClient' => BudgetClient::class,
+            'savingClient' => SavingClient::class,
+        ];
 
-    public static function create(MsDomains $domains, LoggerInterface $log): MicroserviceCLient
-    {
-        return new self($domains, $log);
+        foreach ($clients as $property => $class) {
+            $this->$property = new $class($domain->{str_replace('Client', '', $property)}, $log);
+        }
     }
 
     public function workspace(): WorkspaceClient
@@ -61,4 +62,8 @@ final class MicroserviceCLient {
         return $this->budgetClient;
     }
 
+    public function saving(): SavingClient
+    {
+        return $this->savingClient;
+    }
 }

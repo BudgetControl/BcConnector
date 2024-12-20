@@ -14,10 +14,10 @@ class SavingClient extends Client implements ConnectorInterface {
     /**
      * Get all savings for a workspace.
      *
-     * @param string $wsid
+     * @param int $wsid
      * @return HttpResponse
      */
-    public function getAllSavings(string $wsid): HttpResponse {
+    public function getAllSavings(int $wsid): HttpResponse {
         $url = "/{$wsid}";
         return $this->get($url);
     }
@@ -25,11 +25,11 @@ class SavingClient extends Client implements ConnectorInterface {
     /**
      * Get a specific saving by UUID.
      *
-     * @param string $wsid
+     * @param int $wsid
      * @param string $uuid
      * @return HttpResponse
      */
-    public function getSaving(string $wsid, string $uuid): HttpResponse {
+    public function getSaving(int $wsid, string $uuid): HttpResponse {
         $url = "/{$wsid}/{$uuid}";
         return $this->get($url);
     }
@@ -37,11 +37,11 @@ class SavingClient extends Client implements ConnectorInterface {
     /**
      * Create a new saving.
      *
-     * @param string $wsid
+     * @param int $wsid
      * @param array $data
      * @return HttpResponse
      */
-    public function createSaving(string $wsid, array $data): HttpResponse {
+    public function createSaving(int $wsid, array $data): HttpResponse {
         $url = "/{$wsid}";
         return $this->post($url, $data);
     }
@@ -49,12 +49,12 @@ class SavingClient extends Client implements ConnectorInterface {
     /**
      * Update an existing saving.
      *
-     * @param string $wsid
+     * @param int $wsid
      * @param string $uuid
      * @param array $data
      * @return HttpResponse
      */
-    public function updateSaving(string $wsid, string $uuid, array $data): HttpResponse {
+    public function updateSaving(int $wsid, string $uuid, array $data): HttpResponse {
         $url = "/{$wsid}/{$uuid}";
         return $this->put($url, $data);
     }
@@ -62,11 +62,11 @@ class SavingClient extends Client implements ConnectorInterface {
     /**
      * Delete a saving.
      *
-     * @param string $wsid
+     * @param int $wsid
      * @param string $uuid
      * @return HttpResponse
      */
-    public function deleteSaving(string $wsid, string $uuid): HttpResponse {
+    public function deleteSaving(int $wsid, string $uuid): HttpResponse {
         $url = "/{$wsid}/{$uuid}";
         return $this->delete($url);
     }
