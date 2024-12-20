@@ -27,6 +27,7 @@ class HttpClientService implements ConnectorInterface
     protected array $headers;
     protected array $validStatusCodes;
     private LoggerInterface $log;
+    protected string $queryParams = '';
 
     public function __construct(string $microservice, LoggerInterface $log)
     {
@@ -153,12 +154,14 @@ class HttpClientService implements ConnectorInterface
     {
         $domain = $this->domain;
         $headers = array_merge($this->headers, $headers);
+        $queryParams = $this->queryParams;
 
         $this->log->debug('Request to microservice', [
             'method' => $method,
             'path' => $path,
             'data' => $data,
             'headers' => $headers,
+            'queryParams' => $queryParams,
         ]);
 
         try {
@@ -167,7 +170,7 @@ class HttpClientService implements ConnectorInterface
                 'headers' => $headers,
             ]);
             /** @var  \Psr\Http\Message\ResponseInterface $response */
-            $response = $client->$method("$domain/$path", $data);
+            $response = $client->$method("$domain/$path/$queryParams", $data);
 
         } catch (\Exception $e) {
 
@@ -247,6 +250,18 @@ class HttpClientService implements ConnectorInterface
     public function addValidStatusCodes(array $validStatusCodes): self
     {
         $this->validStatusCodes = array_merge($this->validStatusCodes, $validStatusCodes);
+        return $this;
+    }
+
+    /**
+     * Set the value of queryParams
+     *
+     * @return  self
+     */ 
+    public function setQueryParams(array $queryParams)
+    {
+        $this->queryParams = http_build_query($queryParams);
+
         return $this;
     }
 }
