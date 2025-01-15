@@ -177,7 +177,7 @@ class HttpClientService implements ConnectorInterface
             $this->log->critical('Error: on request to microservice', [
                 'error' => $e->getMessage(),
             ]);
-            return new Response(500, $e->getMessage(), []);
+            return new Response($e->getCode(), $e->getMessage(), []);
 
         }
         
