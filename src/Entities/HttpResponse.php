@@ -37,7 +37,7 @@ final class HttpResponse {
      *
      * @return array The HTTP response as an associative array.
      */
-    public function toArray(): array {
+    public function toArray(): ?array {
         return json_decode($this->body, true);
     }
 
