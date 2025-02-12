@@ -11,49 +11,49 @@ use Budgetcontrol\Connector\Entities\HttpResponse;
  */
 class WorkspaceClient extends Client implements ConnectorInterface {
 
-    public function add(array $data): HttpResponse
+    public function add(int $userId, array $data): HttpResponse
     {
-        return $this->post('/workspaces', $data);
+        return $this->post("/$userId/add", $data);
     }
 
-    public function list(string $userId): HttpResponse
+    public function list(int $userId): HttpResponse
     {
-        return $this->get("/{$userId}/list");
+        return $this->get("/$userId/list");
     }
 
-    public function listByUser(string $userId): HttpResponse
+    public function listByUser(int $userId): HttpResponse
     {
-        return $this->get("/{$userId}/by-user/list");
+        return $this->get("/$userId/by-user/list");
     }
 
-    public function last(string $userId): HttpResponse
+    public function last(int $userId): HttpResponse
     {
-        return $this->get("/{$userId}/last");
+        return $this->get("/$userId/last");
     }
 
-    public function getWorkspace(string $userId, string $wsId): HttpResponse
+    public function getWorkspace(int $userId, int $wsid): HttpResponse
     {
-        return $this->get("/{$userId}/{$wsId}");
+        return $this->get("/$userId/$wsid");
     }
 
-    public function update(string $userId, string $wsId, array $data): HttpResponse
+    public function update(int $userId, int $wsid, array $data): HttpResponse
     {
-        return $this->put("/{$userId}/update/{$wsId}", $data);
+        return $this->put("/$userId/update/$wsid", $data);
     }
 
-    public function deleteWorkspace(string $wsId): HttpResponse
+    public function deleteWorkspace(int $wsid): HttpResponse
     {
-        return $this->delete("/{$wsId}/delete");
+        return $this->delete("/$wsid/delete");
     }
 
-    public function activate(string $userId, string $wsId, array $data): HttpResponse
+    public function activate(int $userId, int $wsid, array $data): HttpResponse
     {
-        return $this->patch("/{$userId}/{$wsId}/activate", $data);
+        return $this->patch("/$userId/$wsid/activate", $data);
     }
 
-    public function share(string $userId, string $wsId, array $data): HttpResponse
+    public function share(int $userId, int $wsid, array $data): HttpResponse
     {
-        return $this->post("/{$userId}/{$wsId}/share", $data);
+        return $this->post("/$userId/$wsid/share", $data);
     }
 
 }

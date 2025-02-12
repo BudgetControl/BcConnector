@@ -18,7 +18,7 @@ class SavingClient extends Client implements ConnectorInterface {
      * @return HttpResponse
      */
     public function getAllSavings(int $wsid): HttpResponse {
-        $url = "/{$wsid}";
+        $url = "/$wsid";
         return $this->get($url);
     }
 
@@ -30,7 +30,7 @@ class SavingClient extends Client implements ConnectorInterface {
      * @return HttpResponse
      */
     public function getSaving(int $wsid, string $uuid): HttpResponse {
-        $url = "/{$wsid}/{$uuid}";
+        $url = "/$wsid/$uuid";
         return $this->get($url);
     }
 
@@ -42,7 +42,7 @@ class SavingClient extends Client implements ConnectorInterface {
      * @return HttpResponse
      */
     public function createSaving(int $wsid, array $data): HttpResponse {
-        $url = "/{$wsid}";
+        $url = "/$wsid";
         return $this->post($url, $data);
     }
 
@@ -55,7 +55,7 @@ class SavingClient extends Client implements ConnectorInterface {
      * @return HttpResponse
      */
     public function updateSaving(int $wsid, string $uuid, array $data): HttpResponse {
-        $url = "/{$wsid}/{$uuid}";
+        $url = "/$wsid/$uuid";
         return $this->put($url, $data);
     }
 
@@ -67,7 +67,7 @@ class SavingClient extends Client implements ConnectorInterface {
      * @return HttpResponse
      */
     public function deleteSaving(int $wsid, string $uuid): HttpResponse {
-        $url = "/{$wsid}/{$uuid}";
+        $url = "/$wsid/$uuid";
         return $this->delete($url);
     }
     

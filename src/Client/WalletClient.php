@@ -13,46 +13,46 @@ class WalletClient extends Client implements ConnectorInterface {
 
     public function list($wsid)
     {
-        return $this->get("/{$wsid}/list");
+        return $this->get("/$wsid/list");
     }
 
     public function create($wsid, $data)
     {
-        return $this->post("/{$wsid}/create", ['json' => $data]);
+        return $this->post("/$wsid/create", ['json' => $data]);
     }
 
     public function show($wsid, $uuid)
     {
-        return $this->get("/{$wsid}/show/{$uuid}");
+        return $this->get("/$wsid/show/$uuid");
     }
 
     public function update($wsid, $uuid, $data)
     {
-        return $this->put("/{$wsid}/update/{$uuid}", ['json' => $data]);
+        return $this->put("/$wsid/update/$uuid", ['json' => $data]);
     }
 
     public function destroy($wsid, $uuid)
     {
-        return $this->delete("/{$wsid}/{$uuid}");
+        return $this->delete("/$wsid/$uuid");
     }
 
     public function archive($wsid, $uuid)
     {
-        return $this->patch("/{$wsid}/archive/{$uuid}", ['archived' => true]);
+        return $this->patch("/$wsid/archive/$uuid", ['archived' => true]);
     }
 
     public function updateBalance($wsid, $uuid, float $newBalance)
     {
-        return $this->patch("/{$wsid}/{$uuid}", ['balance' => $newBalance]);
+        return $this->patch("/$wsid/$uuid", ['balance' => $newBalance]);
     }
 
     public function restore($wsid, $uuid)
     {
-        return $this->patch("/{$wsid}/restore/{$uuid}", ['archived' => false]);
+        return $this->patch("/$wsid/restore/$uuid", ['archived' => false]);
     }
 
     public function sorting($wsid, $uuid, $data)
     {
-        return $this->patch("/{$wsid}/sorting/{$uuid}", ['json' => $data]);
+        return $this->patch("/$wsid/sorting/$uuid", ['json' => $data]);
     }
 }

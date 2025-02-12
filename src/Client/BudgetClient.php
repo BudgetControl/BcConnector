@@ -11,59 +11,59 @@ use Budgetcontrol\Connector\Entities\HttpResponse;
  */
 class BudgetClient extends Client implements ConnectorInterface {
 
-    public function index(string $wsid): HttpResponse
+    public function index(int $wsId): HttpResponse
     {
-        return $this->get("/{$wsid}");
+        return $this->get("/$wsid");
     }
 
-    public function show(string $wsid, string $uuid): HttpResponse
+    public function show(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/{$uuid}");
+        return $this->get("/$wsid/$uuid");
     }
 
-    public function create(string $wsid, array $data): HttpResponse
+    public function create(int $wsId, array $data): HttpResponse
     {
-        return $this->post("/{$wsid}/budget", $data);
+        return $this->post("/$wsid/budget", $data);
     }
 
-    public function update(string $wsid, string $uuid, array $data): HttpResponse
+    public function update(int $wsId, string $uuid, array $data): HttpResponse
     {
-        return $this->put("/{$wsid}/budget/{$uuid}", $data);
+        return $this->put("/$wsid/budget/$uuid", $data);
     }
 
-    public function deleteBudget(string $wsid, string $uuid): HttpResponse
+    public function deleteBudget(int $wsId, string $uuid): HttpResponse
     {
-        return $this->delete("/{$wsid}/budget/{$uuid}");
+        return $this->delete("/$wsid/budget/$uuid");
     }
 
-    public function expired(string $wsid, string $uuid): HttpResponse
+    public function expired(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/budget/{$uuid}/expired");
+        return $this->get("/$wsid/budget/$uuid/expired");
     }
 
-    public function exceeded(string $wsid, string $uuid): HttpResponse
+    public function exceeded(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/budget/{$uuid}/exceeded");
+        return $this->get("/$wsid/budget/$uuid/exceeded");
     }
 
-    public function status(string $wsid, string $uuid): HttpResponse
+    public function status(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/budget/{$uuid}/status");
+        return $this->get("/$wsid/budget/$uuid/status");
     }
 
-    public function getStats(string $wsid, string $uuid): HttpResponse
+    public function getStats(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/budget/{$uuid}/stats");
+        return $this->get("/$wsid/budget/$uuid/stats");
     }
 
-    public function getAllStats(string $wsid): HttpResponse
+    public function getAllStats(int $wsId): HttpResponse
     {
-        return $this->get("/{$wsid}/budgets/stats");
+        return $this->get("/$wsid/budgets/stats");
     }
 
-    public function getAllEntry(string $wsid, string $uuid): HttpResponse
+    public function getAllEntry(int $wsId, string $uuid): HttpResponse
     {
-        return $this->get("/{$wsid}/budget/{$uuid}/entry-list");
+        return $this->get("/$wsid/budget/$uuid/entry-list");
     }
     
 }
