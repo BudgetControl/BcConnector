@@ -170,7 +170,7 @@ class HttpClientService implements ConnectorInterface
                 'headers' => $headers,
             ]);
             /** @var  \Psr\Http\Message\ResponseInterface $response */
-            $response = $client->$method("$domain$path/$queryParams", $data);
+            $response = $client->$method("$domain$path$queryParams", $data);
 
         } catch (\Exception $e) {
 
