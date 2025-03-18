@@ -27,7 +27,7 @@ class WebHook {
      */
     public function newEntry(string $wsUuid, string $walletUuid, int|float $amount): void
     {
-        $endpoint = "/{$this->webhook}/$wsUuid/wallet/balance/$walletUuid";
+        $endpoint = "/http/{$this->webhook}/$wsUuid/wallet/balance/$walletUuid";
         $payload = [
             'amount' => $amount
         ];
