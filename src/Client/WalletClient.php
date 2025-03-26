@@ -55,4 +55,13 @@ class WalletClient extends Client implements ConnectorInterface {
     {
         return $this->patch("/$wsid/sorting/$uuid", ['json' => $data]);
     }
+
+    public function balanceUpdate($wsid, $uuid, $data)
+    {
+        if(!isset($data['amount'])) {
+            throw new \InvalidArgumentException('The amount is required');
+        }
+        
+        return $this->patch("/$wsid/balance/$uuid", ['json' => $data]);
+    }
 }
