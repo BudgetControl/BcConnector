@@ -1,15 +1,16 @@
 <?php
+
 namespace Budgetcontrol\Connector\Client;
 
 use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
-use Budgetcontrol\Connector\Service\HttpClientService;
-use Psr\Log\LoggerInterface;
-use Budgetcontrol\Connector\Entities\HttpResponse;
+use Budgetcontrol\Connector\Traits\Triggers;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
  */
-class EntryClient extends Client implements ConnectorInterface {
+class EntryClient extends Client implements ConnectorInterface
+{
+    use Triggers;
 
     public function getEntry($wsid)
     {
@@ -28,12 +29,20 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function createExpense($wsid, $data)
     {
-        return $this->post("/$wsid/expense", $data);
+        $response = $this->post("/$wsid/expense", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function updateExpense($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/expense/$uuid", $data);
+        $response = $this->put("/$wsid/expense/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function getIncome($wsid)
@@ -48,12 +57,20 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function createIncome($wsid, $data)
     {
-        return $this->post("/$wsid/income", $data);
+        $response = $this->post("/$wsid/income", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function updateIncome($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/income/$uuid", $data);
+        $response = $this->put("/$wsid/income/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function getTransfer($wsid)
@@ -68,12 +85,20 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function createTransfer($wsid, $data)
     {
-        return $this->post("/$wsid/transfer", $data);
+        $response = $this->post("/$wsid/transfer", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function updateTransfer($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/transfer/$uuid", $data);
+        $response = $this->put("/$wsid/transfer/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function getDebit($wsid)
@@ -88,12 +113,20 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function createDebit($wsid, $data)
     {
-        return $this->post("/$wsid/debit", $data);
+        $response = $this->post("/$wsid/debit", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function updateDebit($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/debit/$uuid", $data);
+        $response = $this->put("/$wsid/debit/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function getSaving($wsid)
@@ -108,37 +141,65 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function createSaving($wsid, $data)
     {
-        return $this->post("/$wsid/saving", $data);
+        $response = $this->post("/$wsid/saving", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function updateSaving($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/saving/$uuid", $data);
+        $response = $this->put("/$wsid/saving/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 
     public function deleteDebit($wsid, $uuid)
     {
-        return $this->delete("/$wsid/debit/$uuid");
+        $response = $this->delete("/$wsid/debit/$uuid");
+        if (true === $response->isSuccessful()) {
+            $this->triggerDeleteEntryFromBalance($wsid, $uuid);
+        }
+        return $response;
     }
 
     public function deleteIncome($wsid, $uuid)
     {
-        return $this->delete("/$wsid/income/$uuid");
+        $response = $this->delete("/$wsid/income/$uuid");
+        if (true === $response->isSuccessful()) {
+            $this->triggerDeleteEntryFromBalance($wsid, $uuid);
+        }
+        return $response;
     }
 
     public function deleteExpense($wsid, $uuid)
     {
-        return $this->delete("/$wsid/expense/$uuid");
+        $response = $this->delete("/$wsid/expense/$uuid");
+        if (true === $response->isSuccessful()) {
+            $this->triggerDeleteEntryFromBalance($wsid, $uuid);
+        }
+        return $response;
     }
 
     public function deleteTransfer($wsid, $uuid)
     {
-        return $this->delete("/$wsid/transfer/$uuid");
+        $response = $this->delete("/$wsid/transfer/$uuid");
+        if (true === $response->isSuccessful()) {
+            $this->triggerDeleteEntryFromBalance($wsid, $uuid);
+        }
+        return $response;
     }
 
     public function deleteEntry($wsid, $uuid)
     {
-        return $this->delete("/$wsid/entry/$uuid");
+        $response = $this->delete("/$wsid/entry/$uuid");
+        if (true === $response->isSuccessful()) {
+            $this->triggerDeleteEntryFromBalance($wsid, $uuid);
+        }
+        return $response;
     }
 
     public function listModels($wsid)
@@ -198,6 +259,10 @@ class EntryClient extends Client implements ConnectorInterface {
 
     public function updateEntry($wsid, $uuid, $data)
     {
-        return $this->put("/$wsid/entry/$uuid", $data);
+        $response = $this->put("/$wsid/entry/$uuid", $data);
+        if (true === $response->isSuccessful()) {
+            $this->triggerUpdateBalance($wsid, $data['wallet_id'], $data);
+        }
+        return $response;
     }
 }

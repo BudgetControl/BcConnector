@@ -64,4 +64,9 @@ class WalletClient extends Client implements ConnectorInterface {
         
         return $this->patch("/$wsid/balance/$uuid", ['json' => $data]);
     }
+
+    public function deleteEntryFromBalance($wsid, $uuid)
+    {
+        return $this->delete("/$wsid/balance/$uuid");
+    }
 }
