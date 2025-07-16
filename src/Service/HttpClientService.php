@@ -188,10 +188,6 @@ class HttpClientService implements ConnectorInterface
             ]);
         }
 
-        $this->log->debug('Response from microservice', [
-            'response' => $response->getBody()->getContents(),
-        ]);
-
         return new Response($response->getStatusCode(), $response->getBody()->getContents(), $response->getHeaders());
     }
     /**
