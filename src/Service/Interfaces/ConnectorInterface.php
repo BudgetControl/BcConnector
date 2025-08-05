@@ -2,6 +2,7 @@
 namespace Budgetcontrol\Connector\Service\Interfaces;
 
 use Budgetcontrol\Connector\Entities\HttpResponse as Response;
+use Budgetcontrol\Connector\Entities\Payloads\PayloadInterface;
 
 /**
  * Class to connect to the Budget Control API of the microservice.
@@ -26,7 +27,7 @@ interface ConnectorInterface {
      * @return Response The response from the POST request.
      */
 
-    public function post(string $endpoint, array $data, array $headers = []): Response;
+    public function post(string $endpoint, PayloadInterface $data, array $headers = []): Response;
 
     /**
      * Sends a PUT request to the specified endpoint with the given data and headers.
@@ -36,7 +37,7 @@ interface ConnectorInterface {
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
-    public function put(string $endpoint, array $data, array $headers = []): Response;
+    public function put(string $endpoint, PayloadInterface $data, array $headers = []): Response;
 
     /**
      * Sends a DELETE request to the specified endpoint.
@@ -55,7 +56,7 @@ interface ConnectorInterface {
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
-    public function patch(string $endpoint, array $data, array $headers = []): Response;
+    public function patch(string $endpoint, PayloadInterface $data, array $headers = []): Response;
 
     /**
      * Sends an HTTP OPTIONS request to the specified endpoint.

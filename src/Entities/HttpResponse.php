@@ -61,21 +61,70 @@ final class HttpResponse {
 
     /**
      * Retrieves the value of a specific header from the HTTP response.
-     *
-     * @param string $header The name of the header to retrieve.
-     * @return string The value of the specified header.
      */
-    public function getHeader(string $header): string {
-        return $this->headers[$header];
+    public function getHeader(string $header): ?string {
+        // Handle case-insensitive header lookup
+        foreach ($this->headers as $key => $value) {
+            if (strcasecmp($key, $header) === 0) {
+                return is_array($value) ? implode(', ', $value) : $value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if a header exists
+     */
+    public function hasHeader(string $header): bool {
+        foreach ($this->headers as $key => $value) {
+            if (strcasecmp($key, $header) === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Determines if the HTTP response was successful.
-     *
-     * @return bool True if the response was successful, false otherwise.
      */
     public function isSuccessful(): bool {
         return $this->statusCode >= 200 && $this->statusCode < 300;
     }
-    
+
+    /**
+     * Check if response is client error (4xx)
+     */
+    public function isClientError(): bool {
+        return $this->statusCode >= 400 && $this->statusCode < 500;
+    }
+
+    /**
+     * Check if response is server error (5xx)
+     */
+    public function isServerError(): bool {
+        return $this->statusCode >= 500 && $this->statusCode < 600;
+    }
+
+    /**
+     * Check if response has error
+     */
+    public function hasError(): bool {
+        return !$this->isSuccessful();
+    }
+
+    /**
+     * Get error message from response body
+     */
+    public function getErrorMessage(): ?string {
+        if ($this->isSuccessful()) {
+            return null;
+        }
+
+        $data = $this->toArray();
+        if (is_array($data)) {
+            return $data['message'] ?? $data['error'] ?? null;
+        }
+
+        return $this->body;
+    }
 }

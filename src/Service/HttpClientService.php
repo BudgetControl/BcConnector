@@ -4,40 +4,38 @@ declare(strict_types=1);
 namespace Budgetcontrol\Connector\Service;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ConnectException;
 use Budgetcontrol\Connector\Entities\HttpResponse as Response;
+use Budgetcontrol\Connector\Entities\Payloads\PayloadInterface;
 use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
-use Psr\Log\LoggerInterface;
+use GuzzleHttp\Exception\BadResponseException;
 
 class HttpClientService implements ConnectorInterface
 {
     const VALID_STATUS_CODES = [
-        200,
-        201,
-        202,
-        203,
-        204,
-        205,
-        206,
-        207,
-        208,
-        226
+        200, 201, 202, 203, 204, 205, 206, 207, 208, 226
     ];
 
     protected string $domain;
     protected array $headers;
     protected array $validStatusCodes;
-    private LoggerInterface $log;
     protected string $queryParams = '';
+    protected int $timeout = 30;
+    protected int $connectTimeout = 10;
+    protected bool $debug = false;
 
-    public function __construct(string $microservice, LoggerInterface $log)
+    public function __construct(string $microservice, string $apiSecret)
     {
-        $this->domain = $microservice;
+        $this->domain = rtrim($microservice, '/');
         $this->headers = [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
+            'User-Agent' => 'BudgetControl-Connector/1.0',
+            'X-API-SECRET' => $apiSecret
         ];
         $this->validStatusCodes = self::VALID_STATUS_CODES;
-        $this->log = $log;
     }
 
     /**
@@ -60,7 +58,7 @@ class HttpClientService implements ConnectorInterface
      * @return Response The response from the POST request.
      */
 
-    public function post(string $endpoint, array $data, array $headers = []): Response
+    public function post(string $endpoint, PayloadInterface $data, array $headers = []): Response
     {
         return $this->invoke('post', $endpoint, $data, $headers);
     }
@@ -73,7 +71,7 @@ class HttpClientService implements ConnectorInterface
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
-    public function put(string $endpoint, array $data, array $headers = []): Response
+    public function put(string $endpoint, PayloadInterface $data, array $headers = []): Response
     {
         return $this->invoke('put', $endpoint, $data, $headers);
     }
@@ -98,7 +96,7 @@ class HttpClientService implements ConnectorInterface
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
-    public function patch(string $endpoint, array $data, array $headers = []): Response
+    public function patch(string $endpoint, PayloadInterface $data, array $headers = []): Response
     {
         return $this->invoke('patch', $endpoint, $data, $headers);
     }
@@ -132,12 +130,15 @@ class HttpClientService implements ConnectorInterface
      *
      * @param string $method The HTTP method to use (e.g., 'GET', 'POST', 'PUT', 'DELETE').
      * @param string $endpoint The API endpoint to send the request to.
-     * @param array $data Optional. The data to send with the request. Default is an empty array.
+     * @param PayloadInterface $data Optional. The data to send with the request. Default is an empty array.
      * @param array $headers Optional. The headers to include with the request. Default is an empty array.
      * @return Response The response from the HTTP request.
      */
-    public function request(string $method, string $endpoint, array $data = [], array $headers = []): Response
+    public function request(string $method, string $endpoint, ?PayloadInterface $data = null, array $headers = []): Response
     {
+        if(null !== $data) {
+            $data = $data->getData();
+        }
         return $this->invoke($method, $endpoint, $data, $headers);
     }
 
@@ -152,44 +153,74 @@ class HttpClientService implements ConnectorInterface
      */
     protected function invoke(string $method, string $path, array $data = [], array $headers = []): Response
     {
-        $domain = $this->domain;
-        $headers = array_merge($this->headers, $headers);
-        $queryParams = $this->queryParams;
-
-        $this->log->debug('Request to microservice', [
-            'method' => $method,
-            'path' => $path,
-            'data' => $data,
-            'headers' => $headers,
-            'queryParams' => $queryParams,
-        ]);
+        $url = $this->buildUrl($path);
+        $mergedHeaders = array_merge($this->headers, $headers);
 
         try {
-            
             $client = new Client([
-                'headers' => $headers,
+                'timeout' => $this->timeout,
+                'connect_timeout' => $this->connectTimeout,
+                'headers' => $mergedHeaders,
+                'verify' => !$this->debug,
             ]);
-            /** @var  \Psr\Http\Message\ResponseInterface $response */
-            $response = $client->$method("$domain$path$queryParams", $data);
 
+            $options = [];
+            if (!empty($data) && in_array(strtoupper($method), ['POST', 'PUT', 'PATCH'])) {
+                $options['json'] = $data;
+            }
+
+            $response = $client->request(strtoupper($method), $url, $options);
+
+        } catch (ClientException $e) {
+            return $this->createErrorResponse($e);
+        } catch (ServerException $e) {
+            return $this->createErrorResponse($e);
+        } catch (ConnectException $e) {
+            return new Response(0, 'Connection failed: ' . $e->getMessage(), []);
         } catch (\Exception $e) {
-
-            $this->log->critical('Error: on request to microservice', [
-                'error' => $e->getMessage(),
-            ]);
-            return new Response($e->getCode(), $e->getMessage(), []);
-
+            return new Response($e->getCode() ?: 500, $e->getMessage(), []);
         }
-        
 
         if (!in_array($response->getStatusCode(), $this->validStatusCodes)) {
-            $this->log->error('Error: on request to microservice', [
-                'response' => $response->getBody()->getContents(),
-            ]);
+            throw new BadResponseException(
+                'Invalid response status code: ' . $response->getStatusCode(),
+                $client->getRequest(),
+                $response
+            );
         }
 
-        return new Response($response->getStatusCode(), $response->getBody()->getContents(), $response->getHeaders());
+        return new Response(
+            $response->getStatusCode(),
+            $response->getBody()->getContents(),
+            $response->getHeaders()
+        );
     }
+
+    private function buildUrl(string $path): string
+    {
+        $path = ltrim($path, '/');
+        return $this->domain . '/' . $path . $this->queryParams;
+    }
+
+    /**
+     * Creates a standardized error response based on the provided exception.
+     *
+     * @param \GuzzleHttp\Exception\BadResponseException $e The exception that triggered the error response.
+     * @return Response The generated error response object.
+     */
+    private function createErrorResponse(\GuzzleHttp\Exception\BadResponseException $e): Response
+    {
+        $statusCode = method_exists($e, 'getResponse') && $e->getResponse() 
+            ? $e->getResponse()->getStatusCode() 
+            : $e->getCode();
+        
+        $body = method_exists($e, 'getResponse') && $e->getResponse()
+            ? $e->getResponse()->getBody()->getContents()
+            : $e->getMessage();
+
+        return new Response($statusCode, $body, []);
+    }
+
     /**
      * Set the headers for the HTTP client.
      *
@@ -258,6 +289,42 @@ class HttpClientService implements ConnectorInterface
     {
         $this->queryParams = http_build_query($queryParams);
 
+        return $this;
+    }
+
+    /**
+     * Set request timeout
+     */
+    public function setTimeout(int $seconds): self
+    {
+        $this->timeout = $seconds;
+        return $this;
+    }
+
+    /**
+     * Set connection timeout
+     */
+    public function setConnectTimeout(int $seconds): self
+    {
+        $this->connectTimeout = $seconds;
+        return $this;
+    }
+
+    /**
+     * Enable/disable debug mode
+     */
+    public function setDebug(bool $debug): self
+    {
+        $this->debug = $debug;
+        return $this;
+    }
+
+    /**
+     * Set authentication token
+     */
+    public function setAuthToken(string $token): self
+    {
+        $this->addHeaders(['Authorization' => 'Bearer ' . $token]);
         return $this;
     }
 }
