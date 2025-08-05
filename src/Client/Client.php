@@ -11,9 +11,9 @@ use Budgetcontrol\Connector\Entities\HttpResponse;
  */
 class Client extends HttpClientService implements ConnectorInterface {
 
-    public function __construct(string $domain, LoggerInterface $log)
+    public function __construct(string $domain, string $apiSecret)
     {
-        parent::__construct($domain, $log);
+        parent::__construct($domain, $apiSecret);
     }
     
 }

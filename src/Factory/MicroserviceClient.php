@@ -10,60 +10,203 @@ use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\Connector\Client\SavingClient;
 use Budgetcontrol\Connector\Client\WalletClient;
 use Budgetcontrol\Connector\Client\WorkspaceClient;
+use Budgetcontrol\Connector\Client\MailerClient;
+use Budgetcontrol\Connector\Client\PushNotificationClient;
+use Budgetcontrol\Connector\Client\AuthenticationClient;
 use Budgetcontrol\Connector\Entities\MsDomains;
 
 final class MicroserviceClient {
 
-    private WorkspaceClient $workspaceClient;
-    private WalletClient $walletClient;
-    private EntryClient $entryClient;
-    private StatsClient $statsClient;
-    private BudgetClient $budgetClient;
-    private SavingClient $savingClient;
+    private LoggerInterface $logger;
+    private array $domains;
+    private array $clients = [];
 
-    public function __construct(MsDomains $domain, LoggerInterface $log)
+    public function __construct(LoggerInterface $logger, array $domains = [])
     {
-        $clients = [
-            'workspaceClient' => WorkspaceClient::class,
-            'walletClient' => WalletClient::class,
-            'entryClient' => EntryClient::class,
-            'statsClient' => StatsClient::class,
-            'budgetClient' => BudgetClient::class,
-            'savingClient' => SavingClient::class,
-        ];
+        $this->logger = $logger;
+        $this->domains = $domains;
+    }
 
-        foreach ($clients as $property => $class) {
-            $this->$property = new $class($domain->{str_replace('Client', '', $property)}, $log);
+    /**
+     * Get Entry microservice client
+     */
+    // public function entry(): EntryClient
+    // {
+    //     return $this->getClient('entry', EntryClient::class);
+    // }
+
+    // /**
+    //  * Get Stats microservice client
+    //  */
+    // public function stats(): StatsClient
+    // {
+    //     return $this->getClient('stats', StatsClient::class);
+    // }
+
+    // /**
+    //  * Get Budget microservice client
+    //  */
+    // public function budget(): BudgetClient
+    // {
+    //     return $this->getClient('budget', BudgetClient::class);
+    // }
+
+    // /**
+    //  * Get Saving microservice client
+    //  */
+    // public function saving(): SavingClient
+    // {
+    //     return $this->getClient('saving', SavingClient::class);
+    // }
+
+    // /**
+    //  * Get Wallet microservice client
+    //  */
+    // public function wallet(): WalletClient
+    // {
+    //     return $this->getClient('wallet', WalletClient::class);
+    // }
+
+    // /**
+    //  * Get Workspace microservice client
+    //  */
+    // public function workspace(): WorkspaceClient
+    // {
+    //     return $this->getClient('workspace', WorkspaceClient::class);
+    // }
+
+    /**
+     * Get Mailer microservice client
+     */
+    public function mailer(): MailerClient
+    {
+        return $this->getClient('mailer', MailerClient::class);
+    }
+
+    /**
+     * Get Push Notification microservice client
+     */
+    public function pushNotification(): PushNotificationClient
+    {
+        return $this->getClient('notification', PushNotificationClient::class);
+    }
+
+    /**
+     * Get Authentication microservice client
+     */
+    // public function authentication(): AuthenticationClient
+    // {
+    //     return $this->getClient('authentication', AuthenticationClient::class);
+    // }
+
+    /**
+     * Generic method to get or create a client instance
+     */
+    private function getClient(string $serviceName, string $clientClass): object
+    {
+        if (!isset($this->clients[$serviceName])) {
+            $domain = $this->getDomain($serviceName);
+            $this->clients[$serviceName] = new $clientClass($domain, $this->logger);
         }
+
+        return $this->clients[$serviceName];
     }
 
-    public function workspace(): WorkspaceClient
+    /**
+     * Get domain URL for a specific service
+     */
+    private function getDomain(string $serviceName): string
     {
-        return $this->workspaceClient;
+        if (isset($this->domains[$serviceName])) {
+            return $this->domains[$serviceName];
+        }
+
+        // Fallback to MsDomains if available
+        if (class_exists(MsDomains::class)) {
+            $reflection = new \ReflectionClass(MsDomains::class);
+            $constants = $reflection->getConstants();
+            
+            $constantName = strtoupper($serviceName);
+            if (isset($constants[$constantName])) {
+                return $constants[$constantName];
+            }
+        }
+
+        throw new \InvalidArgumentException("Domain not found for service: {$serviceName}");
     }
 
-    public function wallet(): WalletClient
+    /**
+     * Set domain for a specific service
+     */
+    public function setDomain(string $serviceName, string $domain): self
     {
-        return $this->walletClient;
+        $this->domains[$serviceName] = $domain;
+        
+        // Clear cached client if exists
+        if (isset($this->clients[$serviceName])) {
+            unset($this->clients[$serviceName]);
+        }
+
+        return $this;
     }
 
-    public function entry(): EntryClient
+    /**
+     * Set authentication token for all clients
+     */
+    public function setAuthToken(string $token): self
     {
-        return $this->entryClient;
+        foreach ($this->clients as $client) {
+            if (method_exists($client, 'setAuthToken')) {
+                $client->setAuthToken($token);
+            }
+        }
+
+        return $this;
     }
 
-    public function stats(): StatsClient
+    /**
+     * Set debug mode for all clients
+     */
+    public function setDebug(bool $debug): self
     {
-        return $this->statsClient;
+        foreach ($this->clients as $client) {
+            if (method_exists($client, 'setDebug')) {
+                $client->setDebug($debug);
+            }
+        }
+
+        return $this;
     }
 
-    public function budget(): BudgetClient
+    /**
+     * Set timeout for all clients
+     */
+    public function setTimeout(int $seconds): self
     {
-        return $this->budgetClient;
+        foreach ($this->clients as $client) {
+            if (method_exists($client, 'setTimeout')) {
+                $client->setTimeout($seconds);
+            }
+        }
+
+        return $this;
     }
 
-    public function saving(): SavingClient
+    /**
+     * Get all available service names
+     */
+    public function getAvailableServices(): array
     {
-        return $this->savingClient;
+        return [
+            'entry',
+            'stats', 
+            'budget',
+            'saving',
+            'wallet',
+            'workspace',
+            'mailer',
+            'notification',
+            'authentication'
+        ];
     }
 }
