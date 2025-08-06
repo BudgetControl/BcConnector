@@ -47,13 +47,13 @@ class HttpClientService implements ConnectorInterface
      */
     public function get(string $endpoint, array $headers = []): Response
     {
-        return $this->invoke('get', $endpoint, [], $headers);
+        return $this->invoke('get', $endpoint, null, $headers);
     }
     /**
      * Sends a POST request to the specified endpoint with the given data and headers.
      *
      * @param string $endpoint The endpoint to send the POST request to.
-     * @param array $data The data to be sent in the POST request body.
+     * @param PayloadInterface $data The data to be sent in the POST request body.
      * @param array $headers Optional headers to include in the POST request.
      * @return Response The response from the POST request.
      */
@@ -67,7 +67,7 @@ class HttpClientService implements ConnectorInterface
      * Sends a PUT request to the specified endpoint with the given data and headers.
      *
      * @param string $endpoint The API endpoint to send the PUT request to.
-     * @param array $data The data to be sent in the PUT request body.
+     * @param PayloadInterface $data The data to be sent in the PUT request body.
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
@@ -85,14 +85,14 @@ class HttpClientService implements ConnectorInterface
      */
     public function delete(string $endpoint, array $headers = []): Response
     {
-        return $this->invoke('delete', $endpoint, [], $headers);
+        return $this->invoke('delete', $endpoint, null, $headers);
     }
 
     /**
      * Sends a PATCH request to the specified endpoint with the given data and headers.
      *
      * @param string $endpoint The API endpoint to send the PATCH request to.
-     * @param array $data The data to be sent in the PATCH request body.
+     * @param PayloadInterface $data The data to be sent in the PATCH request body.
      * @param array $headers Optional. Additional headers to include in the request.
      * @return Response The response from the API.
      */
@@ -110,7 +110,7 @@ class HttpClientService implements ConnectorInterface
      */
     public function options(string $endpoint, array $headers = []): Response
     {
-        return $this->invoke('options', $endpoint, [], $headers);
+        return $this->invoke('options', $endpoint, null, $headers);
     }
 
     /**
@@ -122,7 +122,7 @@ class HttpClientService implements ConnectorInterface
      */
     public function head(string $endpoint, array $headers = []): Response
     {
-        return $this->invoke('head', $endpoint, [], $headers);
+        return $this->invoke('head', $endpoint, null, $headers);
     }
 
     /**
@@ -136,9 +136,6 @@ class HttpClientService implements ConnectorInterface
      */
     public function request(string $method, string $endpoint, ?PayloadInterface $data = null, array $headers = []): Response
     {
-        if(null !== $data) {
-            $data = $data->getData();
-        }
         return $this->invoke($method, $endpoint, $data, $headers);
     }
 
@@ -147,11 +144,11 @@ class HttpClientService implements ConnectorInterface
      *
      * @param string $method The HTTP method to use (e.g., 'GET', 'POST', 'PUT', 'DELETE').
      * @param string $path The URL path for the request.
-     * @param array $data Optional. The data to send with the request. Default is an empty array.
+     * @param PayloadInterface $data Optional. The data to send with the request. Default is an empty array.
      * @param array $headers Optional. The headers to include with the request. Default is an empty array.
      * @return Response The response from the HTTP request.
      */
-    protected function invoke(string $method, string $path, array $data = [], array $headers = []): Response
+    protected function invoke(string $method, string $path, ?PayloadInterface $data = null, array $headers = []): Response
     {
         $url = $this->buildUrl($path);
         $mergedHeaders = array_merge($this->headers, $headers);
@@ -166,7 +163,7 @@ class HttpClientService implements ConnectorInterface
 
             $options = [];
             if (!empty($data) && in_array(strtoupper($method), ['POST', 'PUT', 'PATCH'])) {
-                $options['json'] = $data;
+                $options['json'] = $data->getData();
             }
 
             $response = $client->request(strtoupper($method), $url, $options);
