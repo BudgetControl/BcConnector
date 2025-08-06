@@ -2,7 +2,7 @@
 
 namespace Budgetcontrol\Connector\Entities\Payloads;
 
-final class Payload implements PayloadInterface
+class Payload implements PayloadInterface
 {
 
     public function getData(): array
