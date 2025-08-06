@@ -17,14 +17,14 @@ use Budgetcontrol\Connector\Entities\MsDomains;
 
 final class MicroserviceClient {
 
-    private LoggerInterface $logger;
     private array $domains;
+    private string $apiSecret;
     private array $clients = [];
 
-    public function __construct(LoggerInterface $logger, array $domains = [])
+    public function __construct(array $domains, string $apiSecret)
     {
-        $this->logger = $logger;
         $this->domains = $domains;
+        $this->apiSecret = $apiSecret;
     }
 
     /**
@@ -106,7 +106,7 @@ final class MicroserviceClient {
     {
         if (!isset($this->clients[$serviceName])) {
             $domain = $this->getDomain($serviceName);
-            $this->clients[$serviceName] = new $clientClass($domain, $this->logger);
+            $this->clients[$serviceName] = new $clientClass($domain, $this->apiSecret);
         }
 
         return $this->clients[$serviceName];
