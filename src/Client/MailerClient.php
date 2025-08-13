@@ -3,11 +3,12 @@ namespace Budgetcontrol\Connector\Client;
 
 use Budgetcontrol\Connector\Entities\HttpResponse;
 use Budgetcontrol\Connector\Entities\Payloads\Mailer\Contact;
-use Budgetcontrol\Connector\Entities\Payloads\Mailer\BudgetMailer;
-use Budgetcontrol\Connector\Entities\Payloads\Mailer\RecoveryPassword;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Auth\SignUp;
 use Budgetcontrol\Connector\Service\Interfaces\ConnectorInterface;
-use Budgetcontrol\Connector\Entities\Payloads\Mailer\SharedWorkspace;
-use Budgetcontrol\Connector\Entities\Payloads\Mailer\SignUp;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Budget\BudgetMailer;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Auth\RecoveryPassword;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Workspace\SharedWorkspace;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Workspace\UnSharedWorkspace;
 
 final class MailerClient extends Client implements ConnectorInterface {
 
@@ -50,7 +51,7 @@ final class MailerClient extends Client implements ConnectorInterface {
      * @param SharedWorkspace $data Workspace sharing data
      * @return HttpResponse
      */
-    public function unSharedWorkspace(SharedWorkspace $data): HttpResponse
+    public function unSharedWorkspace(UnSharedWorkspace $data): HttpResponse
     {
         return $this->post('/notify/email/workspace/un-share', $data);
     }

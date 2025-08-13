@@ -1,5 +1,5 @@
 <?php 
-namespace Budgetcontrol\Connector\Entities\Payloads\Mailer;
+namespace Budgetcontrol\Connector\Entities\Payloads\Mailer\Budget;
 
 use Budgetcontrol\Connector\Entities\Payloads\Payload;
 use Budgetcontrol\Connector\Entities\Payloads\PayloadInterface;

@@ -1,21 +1,19 @@
 <?php 
-namespace Budgetcontrol\Connector\Entities\Payloads\Mailer;
+namespace Budgetcontrol\Connector\Entities\Payloads\Mailer\Workspace;
 
 use Budgetcontrol\Connector\Entities\Payloads\Payload;
 use Budgetcontrol\Connector\Entities\Payloads\PayloadInterface;
 
-final class SignUp extends Payload implements PayloadInterface
+final class UnSharedWorkspace extends Payload implements PayloadInterface
 {
     public string $to;
     public string $workspace_name;
-    public string $username;
-    public string $password;
-    
+    public string $shared_by;
+
     public function __construct(
         string $to,
         string $workspace_name,
-        string $username,
-        string $password
+        string $shared_by,
     ) {
         if (filter_var($to, FILTER_VALIDATE_EMAIL) === false) {
             throw new \InvalidArgumentException('Invalid email address provided for "to" field.');
@@ -23,7 +21,6 @@ final class SignUp extends Payload implements PayloadInterface
 
         $this->to = $to;
         $this->workspace_name = $workspace_name;
-        $this->username = $username;
-        $this->password = $password;
+        $this->shared_by = $shared_by;
     }
 }
