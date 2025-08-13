@@ -45,6 +45,17 @@ final class MailerClient extends Client implements ConnectorInterface {
     }
 
     /**
+     * Send workspace sharing notification
+     * 
+     * @param SharedWorkspace $data Workspace sharing data
+     * @return HttpResponse
+     */
+    public function unSharedWorkspace(SharedWorkspace $data): HttpResponse
+    {
+        return $this->post('/notify/email/workspace/un-share', $data);
+    }
+
+    /**
      * Send password recovery email
      * 
      * @param RecoveryPassword $data Recovery password data
