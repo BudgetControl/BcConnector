@@ -35,13 +35,13 @@ final class MicroserviceClient {
     //     return $this->getClient('entry', EntryClient::class);
     // }
 
-    // /**
-    //  * Get Stats microservice client
-    //  */
-    // public function stats(): StatsClient
-    // {
-    //     return $this->getClient('stats', StatsClient::class);
-    // }
+    /**
+     * Get Stats microservice client
+     */
+    public function stats(): StatsClient
+    {
+        return $this->getClient('stats', StatsClient::class);
+    }
 
     // /**
     //  * Get Budget microservice client
